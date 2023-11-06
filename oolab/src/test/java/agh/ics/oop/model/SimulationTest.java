@@ -15,12 +15,15 @@ public class SimulationTest {
                 add(new Vector2d(2, 2));
             }
         };
+
         List<MoveDirection> moves;
         moves = OptionsParser.parse(new String[]{"l", "f", "f", "r", "f", "l", "b", "b", "r", "f", "f"});
-        Simulation sim = new Simulation(moves, vector);
+        WorldMap<Animal, Vector2d> map = new RectangularMap(4, 4);
+        Simulation sim = new Simulation(moves, vector, map);
         sim.run();
 
         assertTrue(sim.getAnimals().get(0).isAt(new Vector2d(1, 2)));
         assertTrue(sim.getAnimals().get(1).isAt(new Vector2d(2, 3)));
     }
 }
+
