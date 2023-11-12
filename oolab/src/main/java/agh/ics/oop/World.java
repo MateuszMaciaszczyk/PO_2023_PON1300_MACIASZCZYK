@@ -1,29 +1,15 @@
 package agh.ics.oop;
-import agh.ics.oop.model.MoveDirection;
-import agh.ics.oop.model.MapDirection;
-import agh.ics.oop.model.Vector2d;
+
+import agh.ics.oop.model.*;
+
+import java.util.List;
 
 public class World {
-    public static void run(MoveDirection[] directions) {
-        System.out.println("Start");
-        for (MoveDirection direction : directions) {
-            switch (direction) {
-                case FORWARD -> System.out.println("Zwierzak idzie do przodu");
-                case BACKWARD -> System.out.println("Zwierzak idzie do tyłu");
-                case RIGHT -> System.out.println("Zwierzak idzie w prawo");
-                case LEFT -> System.out.println("Zwierzak idzie w lewo");
-            }
-        }
-        System.out.println("Stop");
-    }
-
     public static void main(String[] args) {
-//         MoveDirection[] directions = OptionsParser.parse(args);
-//         run(directions);
-        Vector2d position1 = new Vector2d(1,2);
-        System.out.println(position1);
-        Vector2d position2 = new Vector2d(-2,1);
-        System.out.println(position2);
-        System.out.println(position1.add(position2));
+        List<MoveDirection> directions2 = OptionsParser.parse(new String[]{"f", "b", "r", "l", "f", "f", "r", "r", "f", "f", "f", "f", "f", "f", "f", "f"});
+        List<Vector2d> positions2 = List.of(new Vector2d(2,3), new Vector2d(3,1));
+        WorldMap<Animal, Vector2d> map = new RectangularMap(4, 4);
+        Simulation simulation2 = new Simulation(directions2, positions2, map);
+        simulation2.run();
     }
 }
