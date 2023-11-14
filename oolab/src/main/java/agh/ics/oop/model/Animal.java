@@ -1,11 +1,11 @@
 package agh.ics.oop.model;
 
-public class Animal {
+public class Animal implements WorldElement{
     private MapDirection orientation;
     private Vector2d position;
 
     public Animal() {
-        new Animal(new Vector2d(2, 2));
+        this(new Vector2d(2, 2));
     }
 
     public Animal(Vector2d position) {
