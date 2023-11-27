@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class AnimalTest {
     @Test
     void orientation() {
-        Animal animal = new Animal();
+        Animal animal = new Animal(new Vector2d(2, 2));
         MoveValidator validator = new RectangularMap(4, 4);
         animal.move(MoveDirection.LEFT, validator);
         animal.move(MoveDirection.LEFT, validator);
