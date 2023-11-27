@@ -2,7 +2,7 @@ package agh.ics.oop.model;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RectangularMapTest {
     @Test
@@ -16,16 +16,20 @@ public class RectangularMapTest {
     }
 
     @Test
-    public void placeTest(){
+    public void placeTest() throws PositionAlreadyOccupiedException {
         RectangularMap map = new RectangularMap(3,3);
-        assertEquals(map.place(new Animal(new Vector2d(1,1))),true);
-        assertEquals(map.place(new Animal(new Vector2d(1,1))),false);
-        assertEquals(map.place(new Animal(new Vector2d(3,3))),true);
-        assertEquals(map.place(new Animal(new Vector2d(4,4))),false);
+        Animal animal1 = new Animal(new Vector2d(1,1));
+        Animal animal2 = new Animal(new Vector2d(2,2));
+        map.place(animal1);
+        map.place(animal2);
+        assertEquals(map.objectAt(new Vector2d(1,1)),animal1);
+        assertEquals(map.objectAt(new Vector2d(2,2)),animal2);
+        assertThrowsExactly(PositionAlreadyOccupiedException.class, () -> map.place(animal1));
+        assertThrowsExactly(PositionAlreadyOccupiedException.class, () -> map.place(animal2));
     }
 
     @Test
-    public void isOccupiedTest(){
+    public void isOccupiedTest() throws PositionAlreadyOccupiedException {
         RectangularMap map = new RectangularMap(3,3);
         map.place(new Animal(new Vector2d(1,1)));
         assertEquals(map.isOccupied(new Vector2d(1,1)),true);
@@ -34,7 +38,7 @@ public class RectangularMapTest {
     }
 
     @Test
-    public void objectAtTest(){
+    public void objectAtTest() throws PositionAlreadyOccupiedException {
         RectangularMap map = new RectangularMap(3,3);
         Animal animal1 = new Animal(new Vector2d(1,1));
         Animal animal2 = new Animal(new Vector2d(2,2));
@@ -46,7 +50,7 @@ public class RectangularMapTest {
     }
 
     @Test
-    public void moveTest() {
+    public void moveTest() throws PositionAlreadyOccupiedException {
         RectangularMap map = new RectangularMap(3, 3);
         Animal animal1 = new Animal(new Vector2d(1, 1));
         Animal animal2 = new Animal(new Vector2d(2, 2));

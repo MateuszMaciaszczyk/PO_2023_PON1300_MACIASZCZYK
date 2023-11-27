@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SimulationTest {
     @Test
-    void simRectangularMap() {
+    void simRectangularMap() throws PositionAlreadyOccupiedException {
         List<Vector2d> vector = new ArrayList<>(){
             {
                 add(new Vector2d(1, 1));
@@ -27,7 +27,7 @@ public class SimulationTest {
     }
 
     @Test
-    void simGrassField() {
+    void simGrassField() throws PositionAlreadyOccupiedException {
         List<Vector2d> vector = new ArrayList<>(){
             {
                 add(new Vector2d(1, 1));

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class OptionsParserTest {
     @Test
-    void parse() {
+    void parse() throws IllegalArgumentException{
         String[] args = {"f", "b", "r", "l", "f", "f"};
         List<MoveDirection> directions = OptionsParser.parse(args);
         List<MoveDirection> expectedDirections = new ArrayList<>() {
@@ -21,5 +21,11 @@ public class OptionsParserTest {
             }
         };
         assertEquals(expectedDirections, directions);
+    }
+
+    @Test
+    void parseException() {
+        String[] args = {"f", "b", "r", "l", "f", "f", "x"};
+        assertThrows(IllegalArgumentException.class, () -> OptionsParser.parse(args));
     }
 }

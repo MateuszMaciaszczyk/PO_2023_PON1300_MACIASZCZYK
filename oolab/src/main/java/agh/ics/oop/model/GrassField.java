@@ -34,11 +34,6 @@ public class GrassField extends AbstractWorldMap {
         return super.isOccupied(position) || grass.containsKey(position);
     }
 
-    @Override
-    public String toString() {
-        return super.toString(getLowerLeft(), getUpperRight());
-    }
-
     private Vector2d getLowerLeft() {
         int minX = Integer.MAX_VALUE;
         int minY = Integer.MAX_VALUE;
@@ -73,7 +68,7 @@ public class GrassField extends AbstractWorldMap {
         return new Vector2d(maxX, maxY);
     }
 
-    HashMap<Vector2d, Grass> getGrass() {
+    public HashMap<Vector2d, Grass> getGrass() {
         return grass;
     }
 
@@ -82,5 +77,10 @@ public class GrassField extends AbstractWorldMap {
         Set<WorldElement> elements = super.getElements();
         elements.addAll(grass.values());
         return elements;
+    }
+
+    @Override
+    public Boundary getCurrentBounds() {
+        return new Boundary(getLowerLeft(), getUpperRight());
     }
 }

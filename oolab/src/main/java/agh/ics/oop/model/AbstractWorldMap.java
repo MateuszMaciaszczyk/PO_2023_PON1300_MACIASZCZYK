@@ -2,13 +2,11 @@ package agh.ics.oop.model;
 
 import agh.ics.oop.model.util.MapVisualizer;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-public abstract class AbstractWorldMap implements WorldMap{
+public abstract class AbstractWorldMap implements WorldMap {
     protected Map<Vector2d, Animal> animals = new HashMap<>();
+    protected List<MapChangeListener> mapChangeListeners = new ArrayList<>();
     protected final MapVisualizer mapVisualizer;
     protected Vector2d lowerLeft;
     protected Vector2d upperRight;
@@ -18,12 +16,12 @@ public abstract class AbstractWorldMap implements WorldMap{
     }
 
     @Override
-    public boolean place(Animal animal) {
-        if (this.canMoveTo(animal.getPosition())) {
-            animals.put(animal.getPosition(), animal);
-            return true;
+    public void place(Animal animal) throws PositionAlreadyOccupiedException{
+        if (!canMoveTo(animal.getPosition())) {
+            throw new PositionAlreadyOccupiedException(animal.getPosition());
         }
-        return false;
+        animals.put(animal.getPosition(), animal);
+        mapChanged("Animal placed at: " + animal.getPosition());
     }
 
     @Override
@@ -31,11 +29,16 @@ public abstract class AbstractWorldMap implements WorldMap{
         animals.remove(animal.getPosition());
         animal.move(direction, this);
         animals.put(animal.getPosition(), animal);
+        mapChanged("Animal moved to: " + animal.getPosition());
     }
 
     @Override
     public boolean canMoveTo(Vector2d position) {
-        return position.follows(lowerLeft) && position.precedes(upperRight) && !animals.containsKey(position);
+        boolean canMove = position.follows(lowerLeft) && position.precedes(upperRight) && !isOccupied(position);
+        if (!canMove) {
+            mapChanged("Animal cannot move to: " + position);
+        }
+        return canMove;
     }
 
     @Override
@@ -48,7 +51,26 @@ public abstract class AbstractWorldMap implements WorldMap{
         return animals.get(position);
     }
 
-    public String toString(Vector2d lowerLeft, Vector2d upperRight) { return mapVisualizer.draw(lowerLeft, upperRight); }
+    public String toString() {
+        Boundary boundary = getCurrentBounds();
+        return mapVisualizer.draw(boundary.lowerLeft(), boundary.upperRight());
+    }
 
     public Set<WorldElement> getElements() { return new HashSet<>(animals.values()); }
+
+    public abstract Boundary getCurrentBounds();
+
+    public void addMapChangeListener(MapChangeListener listener) {
+        mapChangeListeners.add(listener);
+    }
+
+    public void removeMapChangeListener(MapChangeListener listener) {
+        mapChangeListeners.remove(listener);
+    }
+
+    private void mapChanged(String message) {
+        for (MapChangeListener listener : mapChangeListeners) {
+            listener.mapChanged(this, message);
+        }
+    }
 }
