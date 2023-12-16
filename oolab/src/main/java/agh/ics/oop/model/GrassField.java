@@ -7,6 +7,7 @@ public class GrassField extends AbstractWorldMap {
     private final HashMap<Vector2d, Grass> grass = new HashMap<>();
 
     public GrassField(int grassNumber) {
+        super();
         generateGrass(grassNumber);
         super.lowerLeft = new Vector2d(Integer.MIN_VALUE, Integer.MIN_VALUE);
         super.upperRight = new Vector2d(Integer.MAX_VALUE, Integer.MAX_VALUE);
