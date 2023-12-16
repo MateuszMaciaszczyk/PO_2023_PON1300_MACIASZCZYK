@@ -8,18 +8,21 @@ public class Simulation {
     private final List<MoveDirection> moves;
     private final WorldMap map;
 
-    public Simulation(List<MoveDirection> moves_list, List<Vector2d> vector_list, WorldMap map) {
+    public Simulation(List<MoveDirection> moves_list, List<Vector2d> vector_list, WorldMap map) throws PositionAlreadyOccupiedException {
         this.map = map;
         this.initializeAnimals(vector_list);
         this.moves = moves_list;
     }
 
-    private void initializeAnimals(List<Vector2d> positionList) {
+    private void initializeAnimals(List<Vector2d> positionList) throws PositionAlreadyOccupiedException {
         for (Vector2d vector : positionList) {
-            if (map.canMoveTo(vector)) {
-                Animal animal = new Animal(vector);
+            Animal animal = new Animal(vector);
+            try {
                 map.place(animal);
                 animals.add(animal);
+            }
+            catch (PositionAlreadyOccupiedException ignored) {
+                System.out.println(ignored.getMessage());
             }
         }
     }
@@ -28,7 +31,6 @@ public class Simulation {
         int i = 0;
         for (MoveDirection move : moves) {
             map.move(animals.get(i++ % animals.size()), move);
-            System.out.println(map.toString());
         }
     }
 

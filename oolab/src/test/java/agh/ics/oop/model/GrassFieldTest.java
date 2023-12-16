@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GrassFieldTest {
     @Test
-    void isOccupied() {
+    void isOccupied() throws PositionAlreadyOccupiedException {
         GrassField grassField = new GrassField(5);
         Animal animal = new Animal(new Vector2d(2, 2));
         grassField.place(animal);
