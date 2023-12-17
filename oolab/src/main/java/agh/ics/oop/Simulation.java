@@ -3,7 +3,7 @@ import agh.ics.oop.model.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Simulation {
+public class Simulation extends Thread{
     private final List<Animal> animals = new ArrayList<>();
     private final List<MoveDirection> moves;
     private final WorldMap map;
@@ -30,7 +30,12 @@ public class Simulation {
     public void run() {
         int i = 0;
         for (MoveDirection move : moves) {
-            map.move(animals.get(i++ % animals.size()), move);
+            try {
+                Thread.sleep(1000);
+                map.move(animals.get(i++ % animals.size()), move);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

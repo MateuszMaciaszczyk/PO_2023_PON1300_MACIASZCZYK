@@ -23,21 +23,8 @@ public class SimulationEngine implements Runnable{
     }
 
     public void runAsync() {
-        threads.clear();
-
         for (Simulation simulation : simulations) {
-            Thread thread = new Thread(simulation::run);
-            threads.add(thread);
-            thread.start();
-        }
-
-
-        for (Thread thread : threads) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            simulation.start();
         }
     }
 
