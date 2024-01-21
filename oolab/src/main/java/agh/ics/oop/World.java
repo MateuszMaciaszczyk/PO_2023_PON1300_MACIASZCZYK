@@ -13,7 +13,7 @@ public class World {
 
         ArrayList<Simulation> simulations = new ArrayList<>();
 
-        for(int i=0;i<200;i++){
+        for(int i=0;i<20;i++){
             AbstractWorldMap map = new GrassField(10);
             AbstractWorldMap map2 = new RectangularMap(10,10);
             map.addMapChangeListener(new ConsoleMapDisplay());
