@@ -8,7 +8,9 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -22,10 +24,22 @@ public class SimulationApp extends Application {
         GrassField grassField = new GrassField(7);
         presenter.setWorldMap(grassField);
         grassField.addMapChangeListener(presenter);
+
         grassField.addMapChangeListener((worldMap, message) -> {
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             System.out.println(now.format(formatter) + " " + message);
+        });
+
+        grassField.addMapChangeListener((worldMap, message) -> {
+            String fileName = "map_" + worldMap.getId() + ".log";
+            try (PrintWriter writer = new PrintWriter(new FileWriter(fileName, true))) {
+                writer.println(message);
+                writer.println(worldMap.toString());
+                writer.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
 
         configureStage(primaryStage, viewRoot);

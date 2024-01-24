@@ -88,8 +88,12 @@ public class SimulationPresenter implements MapChangeListener {
 
     private void drawGridCell(Vector2d position, int column, int row) {
         Optional<WorldElement> element = worldMap.objectAt(position);
-        Label label = createLabelForElement(element);
-        mapGrid.add(label, column, row);
+
+//        Label label = createLabelForElement(element);
+        if (element.isPresent()) {
+            WorldElementBox box = new WorldElementBox(element.get());
+            mapGrid.add(box, column, row);
+        }
     }
 
     private Label createLabelForElement(Optional<WorldElement> element) {
