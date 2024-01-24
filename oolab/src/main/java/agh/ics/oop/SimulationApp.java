@@ -9,6 +9,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class SimulationApp extends Application {
     @Override
@@ -20,6 +22,11 @@ public class SimulationApp extends Application {
         GrassField grassField = new GrassField(7);
         presenter.setWorldMap(grassField);
         grassField.addMapChangeListener(presenter);
+        grassField.addMapChangeListener((worldMap, message) -> {
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            System.out.println(now.format(formatter) + " " + message);
+        });
 
         configureStage(primaryStage, viewRoot);
         primaryStage.show();
