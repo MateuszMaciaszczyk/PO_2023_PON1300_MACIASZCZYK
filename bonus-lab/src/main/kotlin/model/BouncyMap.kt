@@ -7,23 +7,43 @@ class BouncyMap(private val width: Int, private val height: Int) : WorldMap {
     private val animals: MutableMap<Vector2d, Animal> = HashMap()
 
     override fun place(animal: Animal) {
-        var newPosition = animal.getPosition()
-
-        while (freeSpaces() > 0) {
-            if (canMoveTo(newPosition)) {
-                animals[newPosition] = animal
-                return
-            } else {
-                newPosition = findEmptyPosition(animal.getPosition())
+        if (!animals.containsValue(animal)) {
+            while (freeSpaces() > 0) {
+                if (canMoveTo(animal.getPosition()) and !isOccupied(animal.getPosition())) {
+                    animals[animal.getPosition()] = animal
+                    return
+                } else {
+                    animal.setPosition(findEmptyPosition())
+                }
             }
         }
 
-        val randomAnimal = animals.values.elementAt(Random().nextInt(animals.size))
-        animals.remove(randomAnimal.getPosition())
-        animals[animal.getPosition()] = animal
+        var oldPosition = animal.getPosition()
+        animal.move(orientationToDirection(animal.getOrientation()), this)
+        var newPosition = animal.getPosition()
+
+        while (freeSpaces() > 0) {
+            if (canMoveTo(newPosition) and !isOccupied(newPosition)) {
+                animals.remove(oldPosition)
+                animals[newPosition] = animal
+                animal.setPosition(newPosition)
+                return
+            } else {
+                newPosition = findEmptyPosition()
+            }
+        }
     }
 
-    private fun findEmptyPosition(originalPosition: Vector2d): Vector2d {
+    private fun orientationToDirection(orientation: MapDirection): MoveDirection {
+        return when (orientation) {
+            MapDirection.NORTH -> MoveDirection.FORWARD
+            MapDirection.SOUTH -> MoveDirection.BACKWARD
+            MapDirection.EAST -> MoveDirection.RIGHT
+            MapDirection.WEST -> MoveDirection.LEFT
+        }
+    }
+
+    private fun findEmptyPosition(): Vector2d {
         val x = Random().nextInt(width)
         val y = Random().nextInt(height)
         return Vector2d(x, y)

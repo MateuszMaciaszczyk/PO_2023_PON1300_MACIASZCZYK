@@ -1,12 +1,12 @@
 package model
 
 fun main() {
-    val map = mapOf(Vector2d(0, 0) to "value1", Vector2d(1, 1) to "value2")
-    val mapSize = Vector2d(3, 3)
+    val bouncyMap = BouncyMap(5, 5)
+    val animal1 = Animal(Vector2d(2, 2))
+    val animal2 = Animal(Vector2d(2, 3))
+    bouncyMap.place(animal1)
+    bouncyMap.place(animal2)
 
-    val randomPosition = map.randomPosition()
-    println("Random position: $randomPosition")
-
-    val randomFreePosition = map.randomFreePosition(mapSize)
-    println("Random free position: $randomFreePosition")
+    bouncyMap.place(animal1) // Trigger collision
+    println(bouncyMap.getElements())
 }

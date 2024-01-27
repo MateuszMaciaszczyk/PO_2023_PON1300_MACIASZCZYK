@@ -26,4 +26,8 @@ class Animal(private var position: Vector2d = Vector2d(2, 2)) {
     fun getOrientation(): MapDirection = orientation
 
     fun getPosition(): Vector2d = position
+
+    fun setPosition(newPosition: Vector2d) {
+        this.position = newPosition
+    }
 }
