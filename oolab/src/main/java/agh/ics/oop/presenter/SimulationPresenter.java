@@ -13,6 +13,7 @@ import javafx.scene.layout.GridPane;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SimulationPresenter implements MapChangeListener {
     private WorldMap worldMap;
@@ -86,24 +87,23 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     private void drawGridCell(Vector2d position, int column, int row) {
-        WorldElement element = worldMap.objectAt(position);
-        Label label = createLabelForElement(element);
-        mapGrid.add(label, column, row);
+        Optional<WorldElement> element = worldMap.objectAt(position);
+
+//        Label label = createLabelForElement(element);
+        if (element.isPresent()) {
+            WorldElementBox box = new WorldElementBox(element.get());
+            mapGrid.add(box, column, row);
+        }
     }
 
-    private Label createLabelForElement(WorldElement element) {
+    private Label createLabelForElement(Optional<WorldElement> element) {
         Label label;
-        if (element != null) {
-            label = new Label(element.toString());
-        } else {
-            label = new Label(" ");
-        }
+        label = element.map(worldElement -> new Label(worldElement.toString())).orElseGet(() -> new Label(" "));
         label.setMinWidth(50);
         label.setMinHeight(50);
         label.setAlignment(Pos.CENTER);
         return label;
     }
-
 
     @Override
     public void mapChanged(WorldMap worldMap, String message) {

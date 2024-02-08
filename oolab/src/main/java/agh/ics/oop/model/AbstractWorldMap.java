@@ -3,6 +3,7 @@ package agh.ics.oop.model;
 import agh.ics.oop.model.util.MapVisualizer;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class AbstractWorldMap implements WorldMap {
     protected Map<Vector2d, Animal> animals = new HashMap<>();
@@ -18,7 +19,7 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
 
     @Override
-    public void place(Animal animal) throws PositionAlreadyOccupiedException{
+    public void place(Animal animal) throws PositionAlreadyOccupiedException {
         if (!canMoveTo(animal.getPosition())) {
             throw new PositionAlreadyOccupiedException(animal.getPosition());
         }
@@ -34,11 +35,10 @@ public abstract class AbstractWorldMap implements WorldMap {
         animal.move(direction, this);
         animals.put(animal.getPosition(), animal);
         if (!oldPosition.equals(animal.getPosition())) {
-            mapChanged("Animal moved to: " + animal.getPosition());
+            mapChanged("Animal was moved from: " + oldPosition + " to: " + animal.getPosition());
         } else if (oldPosition.equals(animal.getPosition()) && !oldOrientation.equals(animal.getOrientation())) {
-            mapChanged("Animal rotated to: " + animal.getOrientation());
-        }
-        else {
+            mapChanged("Animal rotated from: " + oldOrientation + " to:" + animal.getOrientation());
+        } else {
             System.out.println("Animal did not move");
         }
     }
@@ -58,8 +58,8 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
 
     @Override
-    public WorldElement objectAt(Vector2d position) {
-        return animals.get(position);
+    public Optional<WorldElement> objectAt(Vector2d position) {
+        return Optional.ofNullable(animals.get(position));
     }
 
     public synchronized String toString() {
@@ -67,9 +67,14 @@ public abstract class AbstractWorldMap implements WorldMap {
         return mapVisualizer.draw(boundary.lowerLeft(), boundary.upperRight());
     }
 
-    public Set<WorldElement> getElements() { return new HashSet<>(animals.values()); }
+    public void setCurrentBounds(Boundary boundary) {
+        this.lowerLeft = boundary.lowerLeft();
+        this.upperRight = boundary.upperRight();
+    }
 
-    public abstract Boundary getCurrentBounds();
+    public Set<WorldElement> getElements() {
+        return new HashSet<>(animals.values());
+    }
 
     public void addMapChangeListener(MapChangeListener listener) {
         mapChangeListeners.add(listener);
@@ -87,5 +92,12 @@ public abstract class AbstractWorldMap implements WorldMap {
 
     public UUID getId() {
         return id;
+    }
+
+    public Collection<Animal> getOrderedAnimals() {
+        return animals.values().stream()
+                .sorted(Comparator.comparing(animal -> ((Animal) animal).getPosition().getX())
+                        .thenComparing(animal -> ((Animal) animal).getPosition().getY()))
+                .collect(Collectors.toList());
     }
 }
